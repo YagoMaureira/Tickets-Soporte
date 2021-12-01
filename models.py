@@ -20,5 +20,16 @@ class Ticket(Base):
         self.status = status
         self.date = date
 
+    def to_json(self):
+        ticket_json = {
+            'ticket_id': self.ticket_id,
+            'title': self.title,
+            'author': self.author,
+            'description': self.description,
+            'status': self.status,
+            'date': str(self.date)
+        }
+        return ticket_json
+
 
 Base.metadata.create_all(bind=engine)

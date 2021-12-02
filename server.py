@@ -1,5 +1,5 @@
 import socket
-from server_functions import create_server_socket, insert_ticket, list_tickets
+from server_functions import *
 import json
 
 
@@ -25,6 +25,16 @@ while True:
             json_ticket_list = list_tickets()
             conn.send(json_ticket_list.encode())
             print("\n Se ha enviado el listado de tickets al cliente")
+
+        if option.decode() == "-e" or option.decode() == "--editar":
+            id_ticket = conn.recv(1024).decode()
+            ticket_json = get_ticket_by_id(id_ticket)
+            ticket_json = json.dumps(ticket_json)
+            print(type(ticket_json), ticket_json)
+            conn.send(ticket_json.encode())
+            edited_ticket = conn.recv(1024).decode()
+            edited_ticket = json.loads(edited_ticket)
+            edit_ticket(edited_ticket, id_ticket)
 
         if option.decode() == "-q" or option.decode() == "--quit":
             print("Cerrando conexion con cliente")

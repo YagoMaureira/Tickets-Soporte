@@ -1,6 +1,6 @@
 import sys
 import json
-from client_functions import create_client_socket, create_ticket
+from client_functions import create_client_socket, create_ticket, edit_ticket
 
 
 if __name__ == '__main__':
@@ -34,8 +34,16 @@ if __name__ == '__main__':
                 print(ticket)
 
         elif option in ["-e", "--editar"]:
-            # Funcion de editar
-            print("Funcion de editar")
+            print("\n Funcion de editar ticket")
+            id_ticket = input("Ingrese el id del ticket que quiere editar: ")
+            client_socket.send(id_ticket.encode())
+            ticket_to_edit = client_socket.recv(1024).decode()
+            ticket_to_edit = json.loads(ticket_to_edit)
+            print(ticket_to_edit)
+            print(type(ticket_to_edit))
+            edited_ticket = edit_ticket(ticket_to_edit)
+            print(type(edited_ticket), edited_ticket)
+            client_socket.send(edited_ticket.encode())
 
         elif option in ["-q", "--quit"]:
             break

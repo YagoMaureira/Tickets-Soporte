@@ -23,3 +23,28 @@ def create_ticket():
     ticket_json = json.dumps(ticket)
     print(type(ticket_json))
     return ticket_json
+
+
+def edit_ticket(ticket_to_edit: dict):
+    print("\n Menu de edicion ".center(40, '*'))
+    edit_title = input("Desea editar el titulo del ticket? s/n -> ")
+    if edit_title == "s":
+        title = input("Ingrese el titulo: ")
+        ticket_to_edit['title'] = title
+
+    edit_author = input("Desea editar el autor del ticket? s/n -> ")
+    if edit_author == "s":
+        author = input("Ingrese el autor: ")
+        ticket_to_edit['author'] = author
+
+    edit_status = input("Desea editar el estado del ticket? s/n ->")
+    if edit_status == "s":
+        status = input("Ingrese el estado: ")
+        ticket_to_edit['status'] = status
+
+    edit_description = input("Desea editar la descripcion del ticket? s/n ->")
+    if edit_description == "s":
+        description = input("Ingrese la descripcion: ")
+        ticket_to_edit['description'] = description
+
+    return json.dumps(ticket_to_edit)

@@ -32,3 +32,19 @@ def list_tickets():
         ticket_list.append(ob.to_json())
     json_tickets = json.dumps(ticket_list)
     return json_tickets
+
+
+def get_ticket_by_id(id_ticket):
+    ticket = sessionobj.query(Ticket).get(int(id_ticket))
+    return ticket.to_json()
+
+
+def edit_ticket(edited_ticket, id_ticket):
+    ticket = sessionobj.query(Ticket).get(int(id_ticket))
+    ticket.title = edited_ticket['title']
+    ticket.description = edited_ticket['description']
+    ticket.status = edited_ticket['status']
+    sessionobj.add(ticket)
+    sessionobj.commit()
+    print("\nTicket actualizado!")
+    return ticket

@@ -48,3 +48,29 @@ def edit_ticket(edited_ticket, id_ticket):
     sessionobj.commit()
     print("\nTicket actualizado!")
     return ticket
+
+
+def filter_ticket(filter_values: dict):
+    print(filter_values)
+    print(f"\n\n {filter_values.items()}")
+    filtered_ticket_list = []
+
+    tickets = Ticket
+    for k, v in filter_values.items():
+        if k == "author":
+            print(f"autor: {type(v)}| {v}")
+            tickets = sessionobj.query(Ticket).filter(Ticket.author == v)
+        if k == "status":
+            print(f"estado: {type(v)}| {v}")
+            tickets = sessionobj.query(Ticket).filter(Ticket.status == v)
+        if k == "date":
+            print(f"fecha: {type(v)}| {v}")
+            tickets = sessionobj.query(Ticket).filter(Ticket.date == v)
+
+    print(type(tickets), tickets)
+    print("-------------")
+    for ob in tickets:
+        print(type(ob), ob)
+        filtered_ticket_list.append(ob.to_json())
+    filtered_ticket_list = json.dumps(filtered_ticket_list)
+    return filtered_ticket_list

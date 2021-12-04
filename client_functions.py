@@ -37,14 +37,34 @@ def edit_ticket(ticket_to_edit: dict):
         author = input("Ingrese el autor: ")
         ticket_to_edit['author'] = author
 
-    edit_status = input("Desea editar el estado del ticket? s/n ->")
+    edit_status = input("Desea editar el estado del ticket? s/n -> ")
     if edit_status == "s":
         status = input("Ingrese el estado: ")
         ticket_to_edit['status'] = status
 
-    edit_description = input("Desea editar la descripcion del ticket? s/n ->")
+    edit_description = input("Desea editar la descripcion del ticket? s/n -> ")
     if edit_description == "s":
         description = input("Ingrese la descripcion: ")
         ticket_to_edit['description'] = description
 
     return json.dumps(ticket_to_edit)
+
+
+def filter_ticket_list():
+    filter_values_dict = {}
+    author_filter = input("Desea filtrar por autor? s/n -> ")
+    if author_filter == "s":
+        author = input("Ingrese el autor: ")
+        filter_values_dict['author'] = author
+
+    status_filter = input("Desea filtrar por estado? s/n -> ")
+    if status_filter == "s":
+        status = input("Ingrese el estado: ")
+        filter_values_dict['status'] = status
+
+    date_filter = input("Desea filtrar por fecha? s/n -> ")
+    if date_filter == "s":
+        date = input("Ingrese la fecha en formato yyyy-mm-dd: ")
+        filter_values_dict['date'] = date
+
+    return json.dumps(filter_values_dict)

@@ -26,6 +26,13 @@ while True:
             conn.send(json_ticket_list.encode())
             print("\n Se ha enviado el listado de tickets al cliente")
 
+        if option.decode() == "-f" or option.decode() == "--filtrar":
+            filter_values_dict = conn.recv(1024).decode()
+            filter_values_dict = json.loads(filter_values_dict)
+
+            filter_ticket_list = filter_ticket(filter_values_dict)
+            conn.send(filter_ticket_list.encode())
+
         if option.decode() == "-e" or option.decode() == "--editar":
             id_ticket = conn.recv(1024).decode()
             ticket_json = get_ticket_by_id(id_ticket)

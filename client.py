@@ -1,6 +1,6 @@
 import sys
 import json
-from client_functions import create_client_socket, create_ticket, edit_ticket
+from client_functions import *
 
 
 if __name__ == '__main__':
@@ -12,7 +12,8 @@ if __name__ == '__main__':
         print("""
         ***** Menu *****
         -i / --insertar -> Para insertar nuevo ticket
-        -l / --listar -> Para listar tickets
+        -l / --listar -> Para listar todos los tickets
+        -f / --filtrar -> Para obtener lista filtrada de tickets
         -e / --editar -> Para editar ticket
         -q / --quit -> Para cerrar programa 
         
@@ -32,6 +33,15 @@ if __name__ == '__main__':
             print(type(json_ticket_list))
             for ticket in json_ticket_list:
                 print(ticket)
+
+        elif option in ["-f", "--filtrar"]:
+            filter_values_dict = filter_ticket_list()
+            client_socket.send(filter_values_dict.encode())
+
+            filtered_tickets = client_socket.recv(1024).decode()
+            filtered_tickets = json.loads(filtered_tickets)
+            print("Lista de tickets filtrados".center(40, '*'))
+            print(filtered_tickets)
 
         elif option in ["-e", "--editar"]:
             print("\n Funcion de editar ticket")

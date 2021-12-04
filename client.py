@@ -26,7 +26,7 @@ if __name__ == '__main__':
             client_socket.send(ticket_json.encode())
 
         elif option in ["-l", "--listar"]:
-            json_ticket_list = client_socket.recv(1024).decode('utf-8')
+            json_ticket_list = client_socket.recv(2048).decode('utf-8')
             json_ticket_list = json.loads(json_ticket_list)
             print("\n Listado de Tickets".center(40, '*'))
             print(json_ticket_list)

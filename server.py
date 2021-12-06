@@ -38,6 +38,15 @@ while True:
 
             edit_ticket(conn, id_ticket)
 
+        if option.decode() == "-x" or option.decode() == "--exportar":
+            export_option = conn.recv(1024).decode()
+            if export_option == "-a":
+                list_tickets(conn)
+            if export_option == "-b":
+                filter_ticket(conn)
+            else:
+                print("Opcion incorrecta")
+
         if option.decode() == "-q" or option.decode() == "--quit":
             server_history(addr[0], option)
             print("Cerrando conexion con cliente")

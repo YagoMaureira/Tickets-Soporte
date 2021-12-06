@@ -1,5 +1,7 @@
 import socket
 import json
+import csv
+import zipfile
 
 
 def create_client_socket():
@@ -68,3 +70,32 @@ def filter_ticket_list():
         filter_values_dict['date'] = date
 
     return json.dumps(filter_values_dict)
+
+
+def export_tickets(conn):
+    print("""- Para exportar toda la lista de tickets ingrese -a
+    - Para exportar una lista filtrada ingrese -b""")
+    opt = input("Ingrese la opcion: ")
+    conn.send(opt.encode())
+
+    if opt == "-a":
+        json_ticket_list = conn.recv(2048).decode('utf-8')
+
+    if opt == "-b":
+        filter_values = filter_ticket_list()
+        conn.send(filter_values.encode())
+        json_ticket_list = conn.recv(2048).decode()
+
+    json_ticket_list = json.loads(json_ticket_list)
+
+    with open("tickets.csv", "w", encoding='utf-8', newline="") as file:
+        fc = csv.DictWriter(file, fieldnames=json_ticket_list[0].keys(),)
+        fc.writeheader()
+        fc.writerows(json_ticket_list)
+
+    ticket_zip = zipfile.ZipFile('tickets.zip', 'w')
+    ticket_zip.write('tickets.csv', compress_type=zipfile.ZIP_DEFLATED)
+    ticket_zip.close()
+
+
+

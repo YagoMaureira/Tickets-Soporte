@@ -2,3 +2,5 @@
 .env
 __pycache__/
 server_history.log
+tickets.csv
+tickets.zip

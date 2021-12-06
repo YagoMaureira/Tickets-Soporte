@@ -15,6 +15,7 @@ if __name__ == '__main__':
         -l / --listar -> Para listar todos los tickets
         -f / --filtrar -> Para obtener lista filtrada de tickets
         -e / --editar -> Para editar ticket
+        -x / --exportar -> Para exportar una lista completa o filtrada
         -q / --quit -> Para cerrar programa 
         
         """)
@@ -54,6 +55,9 @@ if __name__ == '__main__':
             edited_ticket = edit_ticket(ticket_to_edit)
             print(type(edited_ticket), edited_ticket)
             client_socket.send(edited_ticket.encode())
+
+        elif option in ["-x", "--exportar"]:
+            export_tickets(client_socket)
 
         elif option in ["-q", "--quit"]:
             break

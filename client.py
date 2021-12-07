@@ -1,6 +1,8 @@
 import sys
 import json
 from client_functions import *
+from multiprocessing import Process
+import time
 
 
 if __name__ == '__main__':
@@ -16,9 +18,8 @@ if __name__ == '__main__':
         -e / --editar -> Para editar ticket
         -x / --exportar -> Para exportar una lista completa o filtrada
         -q / --quit -> Para cerrar programa 
-        
         """)
-        option = input("Ingrese su opcion: ")
+        option = input("\nIngrese su opcion: ")
         client_socket.send(option.encode())
         if option in ["-i", "--insertar"]:
             create_ticket(client_socket)
@@ -27,14 +28,8 @@ if __name__ == '__main__':
             list_tickets(client_socket)
 
         elif option in ["-f", "--filtrar"]:
-            filter_values_dict = filter_ticket_list()
-            client_socket.send(filter_values_dict.encode())
-
-            filtered_tickets = client_socket.recv(1024).decode()
-            filtered_tickets = json.loads(filtered_tickets)
-            print("\n**** Lista de tickets filtrados ****")
-            for ticket in filtered_tickets:
-                print(f"\n{ticket}")
+            filter_values_dict = filter_values_menu()
+            filter_ticket_list(client_socket, filter_values_dict)
 
         elif option in ["-e", "--editar"]:
             print("\n Funcion de editar ticket")
@@ -48,7 +43,18 @@ if __name__ == '__main__':
             client_socket.send(edited_ticket.encode())
 
         elif option in ["-x", "--exportar"]:
-            export_tickets(client_socket)
+            filter_values_dict = {}
+            print("\n- Para exportar toda la lista de tickets ingrese -a")
+            print("- Para exportar una lista filtrada ingrese -b")
+            opt = input("\nIngrese la opcion: ")
+            if opt == "-b":
+                filter_values_dict = filter_values_menu()
+
+            client_socket.send(opt.encode())
+
+            export_process = Process(target=export_tickets, args=(client_socket, opt, filter_values_dict))
+            export_process.start()
+            export_process.join()
 
         elif option in ["-q", "--quit"]:
             client_socket.close()

@@ -59,7 +59,20 @@ def edit_ticket(ticket_to_edit: dict):
     return json.dumps(ticket_to_edit)
 
 
-def filter_ticket_list():
+def filter_ticket_list(client_socket, filter_values_dict):
+    filter_values_dict = json.dumps(filter_values_dict)
+
+    client_socket.send(filter_values_dict.encode())
+
+    filtered_tickets = client_socket.recv(2048).decode()
+    filtered_tickets = json.loads(filtered_tickets)
+    print("\n**** Lista de tickets filtrados ****")
+    for ticket in filtered_tickets:
+        print(f"\n{ticket}")
+    return filtered_tickets
+
+
+def filter_values_menu():
     filter_values_dict = {}
     author_filter = input("\nDesea filtrar por autor? s/n -> ")
     if author_filter == "s":
@@ -75,25 +88,20 @@ def filter_ticket_list():
     if date_filter == "s":
         date = input("Ingrese la fecha en formato yyyy-mm-dd: ")
         filter_values_dict['date'] = date
+    return filter_values_dict
 
-    return json.dumps(filter_values_dict)
 
-
-def export_tickets(conn):
-    print("""\n- Para exportar toda la lista de tickets ingrese -a
-    - Para exportar una lista filtrada ingrese -b""")
-    opt = input("\nIngrese la opcion: ")
-    conn.send(opt.encode())
+def export_tickets(conn, opt, filter_values_dict):
 
     if opt == "-a":
-        json_ticket_list = conn.recv(2048).decode('utf-8')
+        ticket_list = conn.recv(2048).decode('utf-8')
 
     if opt == "-b":
-        filter_values = filter_ticket_list()
-        conn.send(filter_values.encode())
-        json_ticket_list = conn.recv(2048).decode()
+        filter_values_dict = json.dumps(filter_values_dict)
+        conn.send(filter_values_dict.encode())
+        ticket_list = conn.recv(2048).decode()
 
-    json_ticket_list = json.loads(json_ticket_list)
+    json_ticket_list = json.loads(ticket_list)
 
     with open("tickets.csv", "w", encoding='utf-8', newline="") as file:
         fc = csv.DictWriter(file, fieldnames=json_ticket_list[0].keys(),)
@@ -103,6 +111,3 @@ def export_tickets(conn):
     ticket_zip = zipfile.ZipFile('tickets.zip', 'w')
     ticket_zip.write('tickets.csv', compress_type=zipfile.ZIP_DEFLATED)
     ticket_zip.close()
-
-
-

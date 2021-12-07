@@ -11,7 +11,7 @@ def create_server_socket():
     port = int(input("Ingrese el numero de puerto: "))
     server_socket.bind((host, port))
     server_socket.listen(1)
-    print("Socket iniciado exitosamente!!")
+    print("\n[*]Socket iniciado exitosamente!!")
 
     return server_socket
 
@@ -30,16 +30,14 @@ def insert_ticket(conn):
 def list_tickets(conn):
     ticket_list = []
     tickets = sessionobj.query(Ticket).all()
-    print("Enviando listado de tickets al cliente")
+    print("\nEnviando listado de tickets al cliente")
     sessionobj.commit()
     for ob in tickets:
         ticket_list.append(ob.to_json())
 
-    print(ticket_list)
     json_tickets = json.dumps(ticket_list)
-
     conn.send(json_tickets.encode())
-    print("\n Se ha enviado el listado de tickets al cliente")
+    print("\nSe ha enviado el listado de tickets al cliente")
 
 
 def get_ticket_by_id(id_ticket):
@@ -65,8 +63,6 @@ def filter_ticket(conn):
     filter_values_dict = conn.recv(1024).decode()
     filter_values_dict = json.loads(filter_values_dict)
 
-    print(filter_values_dict)
-    print(f"\n\n {filter_values_dict.items()}")
     filtered_ticket_list = []
 
     tickets = Ticket
@@ -81,10 +77,7 @@ def filter_ticket(conn):
             print(f"fecha: {type(v)}| {v}")
             tickets = sessionobj.query(Ticket).filter(Ticket.date == v)
 
-    print(type(tickets), tickets)
-    print("-------------")
     for ob in tickets:
-        print(type(ob), ob)
         filtered_ticket_list.append(ob.to_json())
     filtered_ticket_list = json.dumps(filtered_ticket_list)
 

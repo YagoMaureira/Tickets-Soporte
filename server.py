@@ -1,17 +1,12 @@
-import socket
 from server_functions import *
 import json
+import threading
 
 
 server_socket = create_server_socket()
 
 
-while True:
-
-    conn, addr = server_socket.accept()
-    print(f"Conexión establecida - Cliente {addr[0]} | {addr[1]}")
-    server_history(addr[0], "Conexion iniciada")
-
+def th_server(conn, addr):
     while True:
         option = conn.recv(1024)
         print(f"\n opcion recibida de cliente: {option.decode()}")
@@ -39,6 +34,7 @@ while True:
             edit_ticket(conn, id_ticket)
 
         if option.decode() == "-x" or option.decode() == "--exportar":
+            server_history(addr[0], option)
             export_option = conn.recv(1024).decode()
             if export_option == "-a":
                 list_tickets(conn)
@@ -51,7 +47,13 @@ while True:
             server_history(addr[0], option)
             print("Cerrando conexion con cliente")
             conn.close()
-            print("Cerrando socket server..")
-            server_socket.close()
-            break
-    break
+
+
+try:
+    while True:
+        conn, addr = server_socket.accept()
+        print(f"\nConexión establecida - Cliente {addr[0]} | {addr[1]}")
+        server_history(addr[0], "Conexion iniciada")
+        th = threading.Thread(target=th_server, args=(conn, addr,)).start()
+except KeyboardInterrupt:
+    server_socket.close()

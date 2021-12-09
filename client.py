@@ -17,7 +17,7 @@ if __name__ == '__main__':
         -f / --filtrar -> Para obtener lista filtrada de tickets
         -e / --editar -> Para editar ticket
         -x / --exportar -> Para exportar una lista completa o filtrada
-        -q / --quit -> Para cerrar programa 
+        -q / --quit -> Para finalizar conexion con servidor 
         """)
         option = input("\nIngrese su opcion: ")
         client_socket.send(option.encode())

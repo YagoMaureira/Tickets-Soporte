@@ -12,19 +12,19 @@ def th_server(conn, addr):
         print(f"\n opcion recibida de cliente: {option.decode()}")
 
         if option.decode() == "-i" or option.decode() == "--insertar":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             insert_ticket(conn)
 
         if option.decode() == "-l" or option.decode() == "--listar":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             list_tickets(conn)
 
         if option.decode() == "-f" or option.decode() == "--filtrar":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             filter_ticket(conn)
 
         if option.decode() == "-e" or option.decode() == "--editar":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             id_ticket = conn.recv(1024).decode()
             ticket_json = get_ticket_by_id(id_ticket)
             ticket_json = json.dumps(ticket_json)
@@ -34,7 +34,7 @@ def th_server(conn, addr):
             edit_ticket(conn, id_ticket)
 
         if option.decode() == "-x" or option.decode() == "--exportar":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             export_option = conn.recv(1024).decode()
             if export_option == "-a":
                 list_tickets(conn)
@@ -44,7 +44,7 @@ def th_server(conn, addr):
                 print("Opcion incorrecta")
 
         if option.decode() == "-q" or option.decode() == "--quit":
-            server_history(addr[0], option)
+            server_history(addr[0], option.decode())
             print("Cerrando conexion con cliente")
             conn.close()
 

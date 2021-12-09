@@ -24,7 +24,8 @@ def insert_ticket(conn):
                     status="pendiente", date=date.today())
     sessionobj.add(ticket)
     sessionobj.commit()
-    print("\n Ticket insertado!")
+    print("\nTicket creado!")
+    conn.send("\nTicket creado!".encode())
 
 
 def list_tickets(conn):

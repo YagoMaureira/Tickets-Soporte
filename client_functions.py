@@ -24,6 +24,8 @@ def create_ticket(client_socket):
     ticket = {"title": ticket_title, "author": ticket_author, "description": ticket_description}
     ticket_json = json.dumps(ticket)
     client_socket.send(ticket_json.encode())
+    server_response = client_socket.recv(1024).decode()
+    print(server_response)
 
 
 def list_tickets(client_socket):

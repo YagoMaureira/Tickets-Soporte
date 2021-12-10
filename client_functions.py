@@ -36,7 +36,14 @@ def list_tickets(client_socket):
         print(f"\n {ticket}")
 
 
-def edit_ticket(ticket_to_edit: dict):
+def edit_ticket(client_socket):
+    print("\n Funcion de editar ticket")
+    id_ticket = input("Ingrese el id del ticket que quiere editar: ")
+    client_socket.send(id_ticket.encode())
+    ticket_to_edit = client_socket.recv(1024).decode()
+    ticket_to_edit = json.loads(ticket_to_edit)
+    print("\nEl siguiente Ticket va ser editado\n", ticket_to_edit)
+
     print("\n**** Menu de edicion ****")
     edit_title = input("\nDesea editar el titulo del ticket? s/n -> ")
     if edit_title == "s":
@@ -58,7 +65,9 @@ def edit_ticket(ticket_to_edit: dict):
         description = input("Ingrese la descripcion: ")
         ticket_to_edit['description'] = description
 
-    return json.dumps(ticket_to_edit)
+    print("\nTicket editado\n", ticket_to_edit)
+    ticket_edited = json.dumps(ticket_to_edit)
+    client_socket.send(ticket_edited.encode())
 
 
 def filter_ticket_list(client_socket, filter_values_dict):

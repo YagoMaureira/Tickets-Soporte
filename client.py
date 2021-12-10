@@ -32,15 +32,7 @@ if __name__ == '__main__':
             filter_ticket_list(client_socket, filter_values_dict)
 
         elif option in ["-e", "--editar"]:
-            print("\n Funcion de editar ticket")
-            id_ticket = input("Ingrese el id del ticket que quiere editar: ")
-            client_socket.send(id_ticket.encode())
-            ticket_to_edit = client_socket.recv(1024).decode()
-            ticket_to_edit = json.loads(ticket_to_edit)
-            print("\nEl siguiente Ticket va ser editado\n", ticket_to_edit)
-            edited_ticket = edit_ticket(ticket_to_edit)
-            print("\nTicket editado\n", edited_ticket)
-            client_socket.send(edited_ticket.encode())
+            edit_ticket(client_socket)
 
         elif option in ["-x", "--exportar"]:
             filter_values_dict = {}

@@ -27,13 +27,8 @@ def th_server(conn, addr, lock):
 
         if option.decode() == "-e" or option.decode() == "--editar":
             server_history(addr[0], option.decode())
-            id_ticket = conn.recv(1024).decode()
-            ticket_json = get_ticket_by_id(id_ticket)
-            ticket_json = json.dumps(ticket_json)
-            print(type(ticket_json), ticket_json)
-            conn.send(ticket_json.encode())
 
-            edit_ticket(conn, id_ticket)
+            edit_ticket(conn)
 
         if option.decode() == "-x" or option.decode() == "--exportar":
             server_history(addr[0], option.decode())
@@ -55,6 +50,7 @@ try:
     while True:
         lock = Lock()
         conn, addr = server_socket.accept()
+
         print(f"\nConexión establecida - Cliente {addr[0]} | {addr[1]}")
         server_history(addr[0], "Conexion iniciada")
         th = Thread(target=th_server, args=(conn, addr, lock,)).start()

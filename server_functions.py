@@ -2,6 +2,7 @@ import socket
 from models import Ticket
 from datetime import date
 from db_config import sessionobj
+from sqlalchemy.exc import SQLAlchemyError
 import json
 
 
@@ -20,12 +21,17 @@ def insert_ticket(conn, lock):
     ticket = conn.recv(1024).decode()
     ticket_dict = json.loads(ticket)
     with lock:
-        ticket = Ticket(title=ticket_dict['title'], author=ticket_dict['author'], description=ticket_dict['description'],
-                        status="pendiente", date=date.today())
+        ticket = Ticket(title=ticket_dict['title'], author=ticket_dict['author'],
+                        description=ticket_dict['description'], status="pendiente", date=date.today())
         sessionobj.add(ticket)
-        sessionobj.commit()
-    print("\nTicket creado!")
-    conn.send("\nTicket creado!".encode())
+        try:
+            sessionobj.commit()
+            print("\nTicket creado!")
+            conn.send("\nTicket creado!".encode())
+        except SQLAlchemyError as e:
+            sessionobj.rollback()
+            print(e)
+            conn.send("\nError al crear ticket".encode())
 
 
 def list_tickets(conn):
@@ -46,18 +52,29 @@ def get_ticket_by_id(id_ticket):
     return ticket.to_json()
 
 
-def edit_ticket(conn, id_ticket):
-    edited_ticket = conn.recv(1024).decode()
+def edit_ticket(conn):
+    id_ticket = conn.recv(1024).decode()
+    ticket_json = get_ticket_by_id(id_ticket)  # Obtenemos en JSON el ticket obtenido en base a su ID
+    ticket_json = json.dumps(ticket_json)
+    print(type(ticket_json), ticket_json)
+    conn.send(ticket_json.encode())  # Enviamos en JSON el ticket para que el cliente lo edite
+
+    edited_ticket = conn.recv(1024).decode()  # Recibimos del cliente el ticket editado
     edited_ticket = json.loads(edited_ticket)
 
-    ticket = sessionobj.query(Ticket).get(int(id_ticket))
+    ticket = sessionobj.query(Ticket).get(int(id_ticket))  # Se trae el ticket de DB y se le coloca los valores editados
     ticket.title = edited_ticket['title']
     ticket.description = edited_ticket['description']
     ticket.status = edited_ticket['status']
     sessionobj.add(ticket)
-    sessionobj.commit()
-    print("\nTicket actualizado!")
-    return ticket
+    try:
+        sessionobj.commit()
+        print("\nTicket actualizado!")
+    except SQLAlchemyError as e:
+        print(e)
+        print("\nError al editar ticket")
+        sessionobj.rollback()
+
 
 
 def filter_ticket(conn):

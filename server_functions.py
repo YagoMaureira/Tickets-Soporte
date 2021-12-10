@@ -16,14 +16,14 @@ def create_server_socket():
     return server_socket
 
 
-def insert_ticket(conn):
+def insert_ticket(conn, lock):
     ticket = conn.recv(1024).decode()
     ticket_dict = json.loads(ticket)
-
-    ticket = Ticket(title=ticket_dict['title'], author=ticket_dict['author'], description=ticket_dict['description'],
-                    status="pendiente", date=date.today())
-    sessionobj.add(ticket)
-    sessionobj.commit()
+    with lock:
+        ticket = Ticket(title=ticket_dict['title'], author=ticket_dict['author'], description=ticket_dict['description'],
+                        status="pendiente", date=date.today())
+        sessionobj.add(ticket)
+        sessionobj.commit()
     print("\nTicket creado!")
     conn.send("\nTicket creado!".encode())
 

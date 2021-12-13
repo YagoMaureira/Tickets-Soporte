@@ -76,24 +76,23 @@ def edit_ticket(conn):
         sessionobj.rollback()
 
 
-
 def filter_ticket(conn):
     filter_values_dict = conn.recv(1024).decode()
     filter_values_dict = json.loads(filter_values_dict)
 
     filtered_ticket_list = []
 
-    tickets = Ticket
+    tickets = sessionobj.query(Ticket).filter()
     for k, v in filter_values_dict.items():
         if k == "author":
             print(f"autor: {type(v)}| {v}")
-            tickets = sessionobj.query(Ticket).filter(Ticket.author == v)
+            tickets = tickets.filter(Ticket.author == v)
         if k == "status":
             print(f"estado: {type(v)}| {v}")
-            tickets = sessionobj.query(Ticket).filter(Ticket.status == v)
+            tickets = tickets.filter(Ticket.status == v)
         if k == "date":
             print(f"fecha: {type(v)}| {v}")
-            tickets = sessionobj.query(Ticket).filter(Ticket.date == v)
+            tickets = tickets.filter(Ticket.date == v)
 
     for ob in tickets:
         filtered_ticket_list.append(ob.to_json())

@@ -37,7 +37,6 @@ def insert_ticket(conn, lock):
 def list_tickets(conn):
     ticket_list = []
     tickets = sessionobj.query(Ticket).all()
-    print("\nEnviando listado de tickets al cliente")
     sessionobj.commit()
     for ob in tickets:
         ticket_list.append(ob.to_json())

@@ -16,7 +16,7 @@ def create_client_socket():
 
 
 def create_ticket(client_socket):
-    print("\nIngrese los datos del ticket".center(40, "*"))
+    print("\n**** Ingrese los datos del ticket ****")
     ticket_title = input("Ingrese el titulo: ")
     ticket_author = input("Ingrese el autor: ")
     ticket_description = input("Ingrese la descripcion: ")
@@ -29,7 +29,7 @@ def create_ticket(client_socket):
 
 
 def list_tickets(client_socket):
-    json_ticket_list = client_socket.recv(2048).decode('utf-8')
+    json_ticket_list = client_socket.recv(4096).decode('utf-8')
     json_ticket_list = json.loads(json_ticket_list)
     print("\n**** Listado de Tickets ****")
     for ticket in json_ticket_list:
@@ -105,7 +105,7 @@ def filter_values_menu():
 def export_tickets(conn, opt, filter_values_dict):
 
     if opt == "-a":
-        ticket_list = conn.recv(2048).decode('utf-8')
+        ticket_list = conn.recv(4096).decode('utf-8')
 
     if opt == "-b":
         filter_values_dict = json.dumps(filter_values_dict)

@@ -1,8 +1,6 @@
 import sys
-import json
 from client_functions import *
 from multiprocessing import Process
-import time
 
 
 if __name__ == '__main__':

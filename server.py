@@ -1,9 +1,7 @@
 from server_functions import *
-import json
 from threading import Thread
 import sys
 from multiprocessing import Lock
-
 
 server_socket = create_server_socket()
 
@@ -27,7 +25,6 @@ def th_server(conn, addr, lock):
 
         if option.decode() == "-e" or option.decode() == "--editar":
             server_history(addr[0], option.decode())
-
             edit_ticket(conn)
 
         if option.decode() == "-x" or option.decode() == "--exportar":

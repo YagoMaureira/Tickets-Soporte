@@ -11,7 +11,7 @@ def create_server_socket():
     host = ""
     port = int(input("Ingrese el numero de puerto: "))
     server_socket.bind((host, port))
-    server_socket.listen(1)
+    server_socket.listen(3)
     print("\n[*]Socket iniciado exitosamente!!")
 
     return server_socket

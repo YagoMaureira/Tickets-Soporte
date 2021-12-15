@@ -1,9 +1,11 @@
 import sys
 from client_functions import *
 from multiprocessing import Process
+from os import system
 
 
 if __name__ == '__main__':
+    system('clear')
     client_socket = create_client_socket()
     while True:
         sys.stdout.flush()

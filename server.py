@@ -2,7 +2,9 @@ from server_functions import *
 from threading import Thread
 import sys
 from multiprocessing import Lock
+from os import system
 
+system('clear')
 server_socket = create_server_socket()
 
 
